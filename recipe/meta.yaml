@@ -6,14 +6,19 @@ package:
   version: {{ version }}
 
 source:
+  # switch to GH release archive, because of tests
   url: https://github.com/robert-haas/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
   sha256: 8734066afd749fd85f9f173f92a1b501ae8e31723d1894c15f29fcec3eac5419
+  patches:
+    - patches/0001_fix-win-unicode-encoding.patch  # [win]
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
+  build:
+    - m2-patch    # [win]
   host:
     - python
     - setuptools
