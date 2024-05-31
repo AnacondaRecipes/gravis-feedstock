@@ -1,0 +1,39 @@
+From a2735125054bc17214f9ae9f4675b41a5f9e910a Mon Sep 17 00:00:00 2001
+From: "Prof. Santhosh Kumar Rajamani" <minerva.santh@gmail.com>
+Date: Sun, 9 Oct 2022 23:11:25 +0530
+Subject: [PATCH] Fixes the Encoding error in Windows system
+
+# Transformation
+        with open(filepath, 'w', encoding="utf-8") as file_handle:
+            html_text = self.to_html()
+added
+encoding = "utf-8"
+at line 122.
+
+This fixes error in encoding because Windows uses ISO as default encoding, leading to error UnicodeEncodeError
+
+UnicodeEncodeError: 'charmap' codec can't encode characters \uxxxx at position (something)
+
+data_structures.py
+
+PLEASE NOTE THIS MIGHT BE A FIX OF WINDOWS SYSTEM WITH ISO ENCODING Only.
+This option should not create any problems as default encoding is utf in Linux and almost everywhere else.
+
+Please reach me, Dr Santhosh Rajamani at minerva.santh@gmail.com if any other information is needed about this error.
+---
+ gravis/_internal/plotting/data_structures.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gravis/_internal/plotting/data_structures.py b/gravis/_internal/plotting/data_structures.py
+index 1510a8c..17c5971 100644
+--- a/gravis/_internal/plotting/data_structures.py
++++ b/gravis/_internal/plotting/data_structures.py
+@@ -119,7 +119,7 @@ def export_html(self, filepath, overwrite=False):
+             _operating_system.is_file(filepath, raise_exception=True)
+ 
+         # Transformation
+-        with open(filepath, 'w') as file_handle:
++        with open(filepath, 'w', encoding="utf-8") as file_handle:
+             html_text = self.to_html()
+             file_handle.write(html_text)
+ 

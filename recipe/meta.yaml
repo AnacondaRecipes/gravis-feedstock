@@ -6,36 +6,57 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/gravis-{{ version }}.tar.gz
-  sha256: a36342602aa7da3bbd674c970439717926a8f7ca0678aa82cc5d756e8c2a529b
+  # switch to GH release archive, because of tests
+  url: https://github.com/robert-haas/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 8734066afd749fd85f9f173f92a1b501ae8e31723d1894c15f29fcec3eac5419
+  patches:
+    - patches/0001_fix-win-unicode-encoding.patch  # [win]
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
   number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
+  build:
+    - m2-patch    # [win]
   host:
-    - python >=3.5
+    - python
+    - setuptools
     - pip
+    - wheel
   run:
-    - python >=3.5
-    - setuptools >=40.0
+    - python
 
 test:
   imports:
     - gravis
-  commands:
-    - pip check
+  source_files:
+    - tests
   requires:
     - pip
+    - pytest
+    - networkx
+    - ipython
+  commands:
+    - pip check
+    # skip tests marked as such, per upstream configuration
+    - pytest -v -m "not only_with_graph_libraries and not only_with_selenium" tests
 
 about:
-  home: https://robert-haas.github.io/gravis-docs/
-  summary: Interactive graph visualizations with Python and HTML/CSS/JS.
+  home: https://robert-haas.github.io/gravis-docs
   license: Apache-2.0
+  license_family: Apache
   license_file: LICENSE
+  summary: Interactive graph visualizations with Python and HTML/CSS/JS.
+  description: |
+    Its name stands for graph visualization and its
+    purpose is to create interactive 2D and 3D plots
+    of graphs and networks.
+  doc_url: https://robert-haas.github.io/gravis-docs/
+  dev_url: https://github.com/robert-haas/gravis
 
 extra:
   recipe-maintainers:
     - julian-belina
+  skip-lints:
+    - python_build_tool_in_run
