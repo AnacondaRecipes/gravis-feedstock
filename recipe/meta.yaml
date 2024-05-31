@@ -27,7 +27,6 @@ requirements:
   run:
     - python
     # access to package files
-    - setuptools >=40.0
 
 test:
   imports:
