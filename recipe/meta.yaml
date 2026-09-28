@@ -13,12 +13,10 @@ source:
     - patches/0001_fix-win-unicode-encoding.patch  # [win]
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
-  build:
-    - m2-patch    # [win]
   host:
     - python
     - setuptools
